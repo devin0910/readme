@@ -2,6 +2,7 @@ package codist.me.readme;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,7 +11,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.security.Key;
+
 public class QuizActivity extends Activity {
+
+    private static final String TAG = QuizActivity.class.getName();
+    private static final String KEY_INDEX = "index";
 
     private Button mTrueButton;
     private Button mFalseButton;
@@ -31,7 +37,12 @@ public class QuizActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_quiz);
+
+        if (savedInstanceState != null) {
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+        }
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
         updateQuestion();
@@ -70,17 +81,19 @@ public class QuizActivity extends Activity {
         });
 
         mPrevButton = (ImageButton) findViewById(R.id.prev_button);
-        mPrevButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mCurrentIndex == 0) {
-                    mCurrentIndex = mQuestionBank.length - 1;
-                } else {
-                    mCurrentIndex = mCurrentIndex - 1;
+        if (mPrevButton != null) {
+            mPrevButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mCurrentIndex == 0) {
+                        mCurrentIndex = mQuestionBank.length - 1;
+                    } else {
+                        mCurrentIndex = mCurrentIndex - 1;
+                    }
+                    updateQuestion();
                 }
-                updateQuestion();
-            }
-        });
+            });
+        }
     }
 
     private void updateQuestion() {
@@ -100,6 +113,13 @@ public class QuizActivity extends Activity {
         }
 
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.d(TAG, "onSaveInstanceState");
+        savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
     }
 
     @Override
