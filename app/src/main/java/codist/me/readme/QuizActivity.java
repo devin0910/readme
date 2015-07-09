@@ -36,6 +36,8 @@ public class QuizActivity extends Activity {
 
     private int mCurrentIndex = 0;
 
+    private boolean mIsCheater;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +80,9 @@ public class QuizActivity extends Activity {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                // 在下个问题的时候重置该值
+                // @// TODO: 在点击下个问题之后返回又会重置对于上个问题对应的mIsCheater又为false的问题
+                mIsCheater = false;
                 updateQuestion();
             }
         });
@@ -92,6 +97,7 @@ public class QuizActivity extends Activity {
                     } else {
                         mCurrentIndex = mCurrentIndex - 1;
                     }
+                    mIsCheater = false;
                     updateQuestion();
                 }
             });
@@ -104,7 +110,7 @@ public class QuizActivity extends Activity {
                 Intent i = new Intent(QuizActivity.this, CheatActivity.class);
                 boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
                 i.putExtra(CheatActivity.EXTRA__ANSWER_IS_TRUE, answerIsTrue);
-                startActivity(i);
+                startActivityForResult(i, 0);
             }
         });
     }
@@ -114,15 +120,29 @@ public class QuizActivity extends Activity {
         mQuestionTextView.setText(question);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (data == null) {
+            return;
+        }
+        mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA__ANSWER_SHOWN, false);
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     private void checkAnswer(boolean userPressedTrue) {
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
 
         int messageResId;
 
-        if (userPressedTrue == answerIsTrue) {
-            messageResId = R.string.correct_toast;
+        if (mIsCheater) {
+            messageResId = R.string.judgment_toast;
         } else {
-            messageResId = R.string.incorrect_toast;
+            if (userPressedTrue == answerIsTrue) {
+                messageResId = R.string.correct_toast;
+            } else {
+                messageResId = R.string.incorrect_toast;
+            }
         }
 
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();

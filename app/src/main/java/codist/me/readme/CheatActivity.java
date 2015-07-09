@@ -1,6 +1,7 @@
 package codist.me.readme;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,10 +13,18 @@ public class CheatActivity extends Activity {
 
     public static final String EXTRA__ANSWER_IS_TRUE = "codist.me.readme.geoquiz.anwser_is_true";
 
+    public static final String EXTRA__ANSWER_SHOWN = "codist.me.readme.geoquiz.anwser_shown";
+
     private boolean mAnswerIsTrue;
 
     private TextView mAnswerTextView;
     private Button mShowAnswer;
+
+    private void setAnswerShownResult(boolean isAnswerShown) {
+        Intent data = new Intent();
+        data.putExtra(EXTRA__ANSWER_SHOWN, isAnswerShown);
+        setResult(RESULT_OK, data);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +35,8 @@ public class CheatActivity extends Activity {
 
         mAnswerTextView = (TextView) findViewById(R.id.answerTextView);
 
+        setAnswerShownResult(false);
+
         mShowAnswer = (Button) findViewById(R.id.showAnswerButton);
         mShowAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,10 +46,10 @@ public class CheatActivity extends Activity {
                 } else {
                     mAnswerTextView.setText(R.string.false_button);
                 }
+
+                setAnswerShownResult(true);
             }
         });
-
-
     }
 
     @Override
