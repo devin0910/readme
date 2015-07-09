@@ -2,6 +2,7 @@ package codist.me.readme;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,6 +23,7 @@ public class QuizActivity extends Activity {
     private Button mTrueButton;
     private Button mFalseButton;
     private Button mCheatButton;
+    private Button mBuildVersionButton;
     private ImageButton mNextButton;
     private ImageButton mPrevButton;
     private TextView mQuestionTextView;
@@ -116,6 +118,14 @@ public class QuizActivity extends Activity {
                 boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
                 i.putExtra(CheatActivity.EXTRA__ANSWER_IS_TRUE, answerIsTrue);
                 startActivityForResult(i, 0);
+            }
+        });
+
+        mBuildVersionButton = (Button) findViewById(R.id.showBuildVersion);
+        mBuildVersionButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                mQuestionTextView.setText("API level " + Build.VERSION.SDK_INT);
             }
         });
     }
