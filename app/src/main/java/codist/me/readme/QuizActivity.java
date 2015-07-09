@@ -38,6 +38,8 @@ public class QuizActivity extends Activity {
 
     private boolean mIsCheater;
 
+    private boolean mCurrentQuestionIsAnswered;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,26 +81,29 @@ public class QuizActivity extends Activity {
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
-                // 在下个问题的时候重置该值
-                // @// TODO: 在点击下个问题之后返回又会重置对于上个问题对应的mIsCheater又为false的问题
-                mIsCheater = false;
-                updateQuestion();
+                if (mCurrentQuestionIsAnswered) {
+                    mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                    updateQuestion();
+                }
             }
         });
+
+        mCurrentQuestionIsAnswered = false;
 
         mPrevButton = (ImageButton) findViewById(R.id.prev_button);
         if (mPrevButton != null) {
             mPrevButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mCurrentIndex == 0) {
-                        mCurrentIndex = mQuestionBank.length - 1;
-                    } else {
-                        mCurrentIndex = mCurrentIndex - 1;
+                    if (mCurrentQuestionIsAnswered) {
+                        if (mCurrentIndex == 0) {
+                            mCurrentIndex = mQuestionBank.length - 1;
+                        } else {
+                            mCurrentIndex = mCurrentIndex - 1;
+                        }
+
+                        updateQuestion();
                     }
-                    mIsCheater = false;
-                    updateQuestion();
                 }
             });
         }
@@ -116,6 +121,8 @@ public class QuizActivity extends Activity {
     }
 
     private void updateQuestion() {
+        mCurrentQuestionIsAnswered = false;
+
         int question = mQuestionBank[mCurrentIndex].getQuestion();
         mQuestionTextView.setText(question);
     }
@@ -134,6 +141,8 @@ public class QuizActivity extends Activity {
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
 
         int messageResId;
+
+        mCurrentQuestionIsAnswered = true;
 
         if (mIsCheater) {
             messageResId = R.string.judgment_toast;
