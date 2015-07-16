@@ -1,8 +1,7 @@
 package codist.me.readme;
 
-
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -15,7 +14,7 @@ import android.widget.EditText;
 
 import java.util.UUID;
 
-public class CrimeFragment extends Fragment{
+public class CrimeFragment extends Fragment {
     public static final String EXTRA_CRIME_ID = "codist.me.readme.criminalintent.crime_id";
 
     private Crime mCrime;
