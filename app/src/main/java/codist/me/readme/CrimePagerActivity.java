@@ -45,8 +45,38 @@ public class CrimePagerActivity extends FragmentActivity{
         for (int i = 0; i < mCrimes.size(); i++) {
             if (mCrimes.get(i).getId().equals(crimeId)) {
                 mViewPager.setCurrentItem(i);
+
+                Crime crime = mCrimes.get(i);
+                if (crime.getTitle() != null) {
+                    setTitle(crime.getTitle());
+                }
                 break;
             }
         }
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            protected Object clone() throws CloneNotSupportedException {
+                return super.clone();
+            }
+
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                Crime crime = mCrimes.get(i);
+                if (crime.getTitle() != null) {
+                    setTitle(crime.getTitle());
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
     }
 }
