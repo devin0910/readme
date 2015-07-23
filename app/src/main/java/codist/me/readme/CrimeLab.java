@@ -19,6 +19,7 @@ public class CrimeLab {
     private CriminalIntentJSONSerializer mSerializer;
 
     private CrimeLab(Context appContext) {
+        // Log.d(TAG, appContext.getFilesDir().toString());
         mAppContext = appContext;
         mSerializer = new CriminalIntentJSONSerializer(mAppContext, FILENAME);
 
@@ -58,6 +59,10 @@ public class CrimeLab {
 
     public void addCrime(Crime c) {
         mCrimes.add(c);
+    }
+
+    public void deleteCrime(Crime c) {
+        mCrimes.remove(c);
     }
 
     public boolean saveCrimes() {
